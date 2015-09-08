@@ -27,10 +27,49 @@ var requestHandler = function(request, response) {
   // Adding more logging to your server can be an easy way to get passive
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
+  // console.log(request);
   console.log("Serving request type " + request.method + " for url " + request.url);
+  var database = {
+    results: [
+      // {
+      //   username: 'taylor',
+      //   text: 'whatsup',
+      //   roomname: 'myRoom'
+      // },      
+      // {
+      //   username: 'rod',
+      //   text: 'hey',
+      //   roomname: 'myRoom'
+      // },
+      // {
+      //   username: 'stephan',
+      //   text: 'what',
+      //   roomname: 'myRoom'
+      // }
+    ]
+  };
+
+  // var stringified = JSON.stringify(database);
+  // console.log(stringified);
 
   // The outgoing status.
   var statusCode = 200;
+
+  if (request.method === 'POST') {
+    // add message to database results array
+    // database.results.push(JSON.stringify(request.data));
+    var string = "";
+    request.on('data', function(data) {
+      string = string + data;
+    });
+    request.on('end', function() {
+      database.results.push(JSON.parse(string));
+      string = '';
+      // responce .end
+    })
+
+    statusCode = 201;
+  }
 
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
@@ -52,7 +91,7 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end("Hello, World!");
+  response.end(JSON.stringify(database));
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
@@ -71,3 +110,4 @@ var defaultCorsHeaders = {
   "access-control-max-age": 10 // Seconds.
 };
 
+module.exports = requestHandler;
