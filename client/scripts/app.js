@@ -33,6 +33,7 @@ var fetch = function() {
     type: "GET",
     contentType: "application/json",
     success: function(data) {
+      data = JSON.parse(data);
       data.results.forEach(function(message){
         for (var key in message) {
           message[key] = _.escape(message[key]);
@@ -113,7 +114,8 @@ var app = {
     });
     
   },
-  server: "https://api.parse.com/1/classes/chatterbox",
+  server: "http://127.0.0.1:3000/classes/messages",
+  // server: "https://api.parse.com/1/classes/chatterbox",
   send: send,
   fetch: fetch,
   clearMessages: clearMessages,
